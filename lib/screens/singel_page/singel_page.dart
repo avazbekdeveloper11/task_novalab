@@ -19,7 +19,7 @@ class FactsPage extends StatelessWidget {
             child: ListTile(
               tileColor: Colors.deepPurple,
               title: Text(
-                HiveService.factBox!.getAt(index)[0]['text'].toString(),
+                HiveService.factBox!.getAt(index).toString(),
               ),
             ),
           );

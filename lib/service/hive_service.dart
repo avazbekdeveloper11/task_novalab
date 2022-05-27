@@ -13,7 +13,7 @@ class HiveService {
     debugPrint("Opened Box");
   }
 
-  static Future<void> putToBox(List data) async {
+  static Future<void> putToBox(data) async {
     factBox!.add(data);
   }
 }

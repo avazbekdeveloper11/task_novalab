@@ -12,7 +12,7 @@ class RouterGenerator {
 
     switch (settings.name) {
       case '/home':
-        return _route(const HomePage());
+        return _route( HomePage());
       case '/facts':
         return _route(const FactsPage());
     }

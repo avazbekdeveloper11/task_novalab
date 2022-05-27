@@ -8,14 +8,14 @@ class CatCubit extends Cubit<CatState> {
   CatCubit() : super(CatInitial());
   int index = 0;
 
-  void changeIndex() async {
+  void changeIndex(fact) async {
     index++;
     emit(ChangeIndexState());
-    Future.delayed(
-      const Duration(seconds: 30),
+    await Future.delayed(
+      const Duration(seconds: 8),
       () async {
-        List data = await ServiceCat().getData();
-        HiveService.putToBox(data);
+        HiveService.putToBox(fact);
+        print("object");
       },
     );
   }

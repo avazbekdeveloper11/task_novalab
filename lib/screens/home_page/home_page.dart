@@ -3,11 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task/core/constant/constant.dart';
 import 'package:task/core/extension/mediaquery_extension.dart';
 import 'package:task/cubit/cat_cubit.dart';
+import 'package:task/models/fact_model.dart';
 import 'package:task/service/cats_service.dart';
+import 'package:task/service/hive_service.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
-
+  HomePage({Key? key}) : super(key: key);
+  String? fact;
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -39,6 +41,55 @@ class HomePage extends StatelessWidget {
                   image: ConstantData.instance.randomImageUrl + index,
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: FutureBuilder(
+                  future: ServiceCat().getDataModel(),
+                  builder: (context, AsyncSnapshot<List<FactModel>> snap) {
+                    if (!snap.hasData) {
+                      return const Center(
+                          child: CircularProgressIndicator.adaptive());
+                    } else if (snap.hasError) {
+                      return const Center(child: Text("Error"));
+                    } else {
+                      fact = snap.data![0].text.toString();
+                      String hour = snap.data![0].createdAt
+                          .toString()
+                          .split(' ')[1]
+                          .toString()
+                          .split('.')[0]
+                          .toString()
+                          .split(':')[0]
+                          .toString();
+                      String min = snap.data![0].createdAt
+                          .toString()
+                          .split(' ')[1]
+                          .toString()
+                          .split('.')[0]
+                          .toString()
+                          .split(':')[1]
+                          .toString();
+                      return Column(
+                        children: [
+                          Text(
+                            "$hour:$min",
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                          SizedBox(
+                            height: context.height * 0.2,
+                            child: SingleChildScrollView(
+                              child: Text(
+                                snap.data![0].text.toString(),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+                  },
+                ),
+              ),
 
               const Spacer(),
               // ! change image button
@@ -55,8 +106,8 @@ class HomePage extends StatelessWidget {
                     ).textTheme.labelSmall!.copyWith(fontSize: 15),
                   ),
                 ),
-                onPressed: () {
-                  context.read<CatCubit>().changeIndex();
+                onPressed: () async {
+                  context.read<CatCubit>().changeIndex(fact);
                 },
               ),
               // ! Get fact button
